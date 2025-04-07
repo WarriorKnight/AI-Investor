@@ -1,26 +1,27 @@
 const client = require('./client').default;
 const fs = require('fs');
-
-
+const path = require('path');
 
 async function fetchAllStocks(){
-  
   try {
-    const results = await client.getWeeklyStocksData('AAPL');
-    console.log(results);
-
-    fs.readFile('./../.conf', 'utf8', function (err, data) {
-      if (err) throw err;
-      obj = JSON.parse(data);
-      for (var stock in obj.stocks){
-        console.log(obj.stocks[stock]);
-      }
-    });
-
+    conf = JSON.parse(await fs.promises.readFile(path.resolve(__dirname, '../.conf'), 'utf8'));
+    var stocksData = [];
+    
+    for (var stock in conf.stocks){
+      prices = await client.getWeeklyStocksData(conf.stocks[stock]);
+      news = await client.getNews(conf.stocks[stock]);
+      stocksData.push({
+        information: prices.meta,
+        quotes: prices.quotes,
+        news: news.map(item => item.title),
+      });
+    }
+    // console.log(JSON.stringify(stocksData, null, 2));
+    return stocksData;
 
   } catch (error) {
-    console.error('Error fetching weekly stocks data:', error);
+    console.error('Error fetching stocks data:', error);
   }
 }
 
-fetchAllStocks();
+module.exports = {fetchAllStocks};
