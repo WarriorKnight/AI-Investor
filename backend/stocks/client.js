@@ -14,6 +14,9 @@ async function getWeeklyStocksData(symbol) {
     return results;
 }
 
+async function getNews(symbol){
+    const news = await yahooFinance.search(symbol);
+    return news.news;
+}
 
-
-module.exports.default = {getWeeklyStocksData};
+module.exports.default = {getWeeklyStocksData, getNews};
