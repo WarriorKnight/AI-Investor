@@ -1,4 +1,4 @@
-const client = require('./client').default;
+const {getWeeklyStocksData, getNews} = require('./client');
 const fs = require('fs');
 const path = require('path');
 
@@ -8,8 +8,8 @@ async function fetchAllStocks(){
     var stocksData = [];
     
     for (var stock in conf.stocks){
-      prices = await client.getWeeklyStocksData(conf.stocks[stock]);
-      news = await client.getNews(conf.stocks[stock]);
+      prices = await getWeeklyStocksData(conf.stocks[stock]);
+      news = await getNews(conf.stocks[stock]);
       stocksData.push({
         information: prices.meta,
         quotes: prices.quotes,
