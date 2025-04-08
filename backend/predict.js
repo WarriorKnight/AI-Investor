@@ -7,17 +7,18 @@ dotenv.config();
 const instructions = `
 You are an AI investor managing a virtual stock portfolio.
 
-Your task is to analyze the current portfolio, available cash, and market prices. Based on this data, suggest a single stock trade (either a BUY or a SELL) that aligns with the provided investment strategy.
+Your task is to analyze the current portfolio, available cash, and market prices. Based on this data, suggest a single or multiple stock trades (either a BUY or a SELL) that aligns with the provided investment strategy.
 
 ⚠️ Respond ONLY with a valid JSON object using this exact structure:
 
+[
 {
   "action": "BUY" or "SELL",
   "symbol": "STOCK_SYMBOL",
   "quantity": number,
   "reason": "Your reasoning in one sentence"
-}
-
+},
+]
 Do NOT include any extra text or explanation outside the JSON.
 Make sure the action is possible with the available cash or holdings.
 Avoid suggesting fractional quantities.
@@ -52,7 +53,7 @@ async function predict(input) {
         instructions,
         input: JSON.stringify(input),
       });
-    console.log(response.output_text);
+    // console.log(response.output_text);
     return response;
 }
 
