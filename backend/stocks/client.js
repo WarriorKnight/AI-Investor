@@ -19,4 +19,10 @@ async function getNews(symbol){
     return news.news;
 }
 
-module.exports.default = {getWeeklyStocksData, getNews};
+async function getCurrentPrice(symbol){
+  const results = await yahooFinance.quote(symbol);
+  // console.log(JSON.stringify(results, null, 2));
+  return results.regularMarketPrice;
+}
+
+module.exports = {getWeeklyStocksData, getNews, getCurrentPrice};
