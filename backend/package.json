@@ -2,7 +2,9 @@
   "dependencies": {
     "@prisma/client": "^6.5.0",
     "alphavantage": "^2.5.0",
+    "cron": "^4.1.4",
     "dotenv": "^16.4.7",
+    "express": "^5.1.0",
     "finnhub": "^1.2.19",
     "openai": "^4.92.1",
     "yahoo-finance2": "^2.13.3"
