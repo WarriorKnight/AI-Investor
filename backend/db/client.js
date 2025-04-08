@@ -33,4 +33,45 @@ async function initializeDatabase(cashBalance) {
   }
 }
 
+
+async function getPortfolio() {
+  try {
+    const portfolio = await prisma.portfolioState.findFirst({
+      orderBy: { timestamp: 'desc' },
+    });
+
+    if (!portfolio) {
+      return { error: 'Portfolio not found' };
+    }
+    console.log('Portfolio fetched:',{portfolio: portfolio});
+    return {
+      portfolio:{
+        cashBalance: portfolio.cashBalance,
+        portfolioValue: portfolio.portfolioValue,
+        totalValue: portfolio.totalValue,
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching portfolio:', error);
+    return { error: 'Error fetching portfolio' };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function getPositions(){
+  try {
+    const positions = await prisma.position.findMany();
+    if (positions.length === 0) {
+      return { positions: 'Currently no stocks in your position.' };
+    }
+    console.log('Positions fetched:', {positions: positions});
+    return {positions: positions}
+  } catch (error) {
+    console.error('Error fetching positions', error);
+  }
+}
+
+getPortfolio();
+getPositions();
 module.exports = {initializeDatabase};
