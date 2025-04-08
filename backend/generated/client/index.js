@@ -160,6 +160,14 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
+      },
+      {
+        "fromEnvVar": null,
+        "value": "linux-musl-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -167,7 +175,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
@@ -177,6 +185,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -185,8 +194,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Transaction {\n  id        Int         @id @default(autoincrement())\n  action    TradeAction\n  symbol    String\n  quantity  Int\n  price     Float\n  timestamp DateTime    @default(now())\n  reason    String?\n}\n\nmodel Position {\n  symbol      String @id\n  quantity    Int\n  avgBuyPrice Float\n}\n\nmodel PortfolioState {\n  id             Int      @id @default(autoincrement())\n  timestamp      DateTime @default(now())\n  cashBalance    Float\n  portfolioValue Float\n  totalValue     Float\n}\n\nenum TradeAction {\n  BUY\n  SELL\n}\n",
-  "inlineSchemaHash": "622f996e8c65675ffedcce1f65e14fc1e85952a93a6bee6bfbe09d3e44412eb9",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/client\"\n  binaryTargets = [\"native\", \"windows\", \"linux-musl-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Transaction {\n  id        Int         @id @default(autoincrement())\n  action    TradeAction\n  symbol    String\n  quantity  Int\n  price     Float\n  timestamp DateTime    @default(now())\n  reason    String?\n}\n\nmodel Position {\n  symbol      String @id\n  quantity    Int\n  avgBuyPrice Float\n}\n\nmodel PortfolioState {\n  id             Int      @id @default(autoincrement())\n  timestamp      DateTime @default(now())\n  cashBalance    Float\n  portfolioValue Float\n  totalValue     Float\n}\n\nenum TradeAction {\n  BUY\n  SELL\n}\n",
+  "inlineSchemaHash": "1ee64c7e03e2d410ac6b6ca2e7ccd56e29fa8fd79457b98f3fa793b3a77fb610",
   "copyEngine": true
 }
 
@@ -227,6 +236,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "generated/client/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node");
+path.join(process.cwd(), "generated/client/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/client/schema.prisma")
