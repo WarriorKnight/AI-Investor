@@ -55,12 +55,11 @@ async function getPortfolioAll() {
     // Fetch all portfolio states, positions, and transactions in parallel
     const [portfolioStates, positions, transactions] = await Promise.all([
       prisma.portfolioState.findMany({
-        orderBy: { timestamp: 'desc' },
+      orderBy: { timestamp: 'desc' },
       }),
       prisma.position.findMany(),
       prisma.transaction.findMany({
-        orderBy: { timestamp: 'desc' },
-        take: 10,
+      orderBy: { timestamp: 'desc' },
       }),
     ]);
 
