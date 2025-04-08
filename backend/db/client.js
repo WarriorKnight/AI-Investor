@@ -7,8 +7,6 @@ async function fetchTransactions() {
       console.log(transactions);
     } catch (error) {
       console.error('Error fetching transactions:', error);
-    } finally {
-      await prisma.$disconnect();
     }
 }
 
@@ -28,8 +26,6 @@ async function initializeDatabase(cashBalance) {
     }
   } catch (error) {
     console.error('Error initializing database:', error);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -43,19 +39,47 @@ async function getPortfolio() {
     if (!portfolio) {
       return { error: 'Portfolio not found' };
     }
-    console.log('Portfolio fetched:',{portfolio: portfolio});
     return {
-      portfolio:{
         cashBalance: portfolio.cashBalance,
         portfolioValue: portfolio.portfolioValue,
         totalValue: portfolio.totalValue,
-      }
     };
   } catch (error) {
     console.error('Error fetching portfolio:', error);
     return { error: 'Error fetching portfolio' };
-  } finally {
-    await prisma.$disconnect();
+  }
+}
+
+async function getPortfolioAll() {
+  try {
+    // Fetch all portfolio states, positions, and transactions in parallel
+    const [portfolioStates, positions, transactions] = await Promise.all([
+      prisma.portfolioState.findMany({
+        orderBy: { timestamp: 'desc' },
+      }),
+      prisma.position.findMany(),
+      prisma.transaction.findMany({
+        orderBy: { timestamp: 'desc' },
+        take: 10,
+      }),
+    ]);
+
+    // Return combined portfolio data
+    return {
+      portfolio: portfolioStates.length > 0 ? portfolioStates : 'No portfolio states available.',
+      positions: positions.length > 0 ? positions : 'No positions available.',
+      transactions: transactions.length > 0 ? transactions : 'No recent transactions found.',
+      info: portfolioStates.length > 0
+        ? {
+            cashBalance: portfolioStates[0].cashBalance,
+            portfolioValue: portfolioStates[0].portfolioValue,
+            totalValue: portfolioStates[0].totalValue,
+          }
+        : 'No portfolio states available.',
+    };
+  } catch (error) {
+    console.error('Error fetching complete portfolio data:', error);
+    return { error: 'Error fetching portfolio data' };
   }
 }
 
@@ -65,13 +89,30 @@ async function getPositions(){
     if (positions.length === 0) {
       return { positions: 'Currently no stocks in your position.' };
     }
-    console.log('Positions fetched:', {positions: positions});
-    return {positions: positions}
+    return positions
   } catch (error) {
     console.error('Error fetching positions', error);
   }
 }
 
-getPortfolio();
-getPositions();
-module.exports = {initializeDatabase};
+async function getLastTransactions(){
+  try {
+    const transactions = await prisma.transaction.findMany({
+      orderBy: { timestamp: 'desc' },
+      take: 10,
+    });
+
+    if (transactions.length === 0) {
+      return { transactions: 'No recent transactions found.' };
+    }
+    return transactions;
+  } catch (error) {
+    console.error('Error fetching last transactions:', error);
+    return { error: 'Error fetching last transactions' };
+  }
+}
+
+// getPortfolio();
+// getPositions();
+// getLastTransactions();
+module.exports = {initializeDatabase, getPositions, getLastTransactions, getPortfolio, fetchTransactions, getPortfolioAll};
