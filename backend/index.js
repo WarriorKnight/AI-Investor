@@ -1,14 +1,45 @@
-// const { fetchAllStocks } = require("./stocks/stocks.js");
-// const {predict} = require('./predict.js');
-const{initializeDatabase} = require('./db/client.js')
-const {loadActions} = require('./actions.js');
+const express = require('express');
+const path = require('path');
+const { getPortfolioAll } = require('./db/client');
+const app = express();
+
+require('./jobs/portfolioEvaluationScheduler');
+require('./jobs/buySellScheduler');
 
 
-(async () => {
-    // const output = await fetchAllStocks();
-    // console.log(output);
-    // console.log(predict(output));
-    await initializeDatabase(25000);
+app.use(express.static(path.join(__dirname, '../dist')));
 
-    loadActions('[{  "action": "SELL",  "symbol": "AAPL",  "quantity": 10,  "reason": "Apples stock is undervalued based on recent earnings."},{  "action": "SELL",  "symbol": "TSLA",  "quantity": 5,  "reason": "Teslas stock has reached a short-term high and is overvalued."},{  "action": "BUY",  "symbol": "MSFT",  "quantity": 15,  "reason": "Microsoft shows strong growth potential in cloud computing."}]')
-})();
+app.get('/api/portfolio', async (req, res) => {
+    try {
+        const portfolioData = await getPortfolioAll();
+
+        if (portfolioData.error) {
+            return res.status(404).json({ error: portfolioData.error });
+        }
+
+        res.json(portfolioData);
+    } catch (error) {
+        console.error('Error fetching portfolio data:', error);
+        res.status(500).json({ error: 'Failed to fetch portfolio data' });
+    }
+});
+
+const staticPath = path.join(__dirname, "dist");
+app.use(express.static(staticPath));
+
+app.get("/", (req, res) => {
+    const indexPath = path.join(staticPath, "index.html");
+    fs.readFile(indexPath, "utf8", (err, data) => {
+        if (err) {
+            console.error("Error reading index.html:", err);
+            res.status(500).send("Internal Server Error");
+        } else {
+            res.send(data);
+        }
+    });
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
