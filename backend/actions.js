@@ -10,22 +10,68 @@ function loadActions(input){
     }
 }
 
+async function calculatePortfolioState() {
+    try {
+        const positions = await prisma.position.findMany();
+
+        let portfolioValue = 0;
+        for (const position of positions) {
+            const marketPrice = await getCurrentPrice(position.symbol);
+            portfolioValue += position.quantity * marketPrice;
+            console.log('You own: ', position.symbol);
+        }
+
+        const latestPortfolioState = await prisma.portfolioState.findFirst({
+            orderBy: { timestamp: 'desc' },
+        });
+
+        if (!latestPortfolioState) {
+            throw new Error('Portfolio state not found. Please initialize the portfolio.');
+        }
+
+        const updatedCashBalance = latestPortfolioState.cashBalance; 
+        const totalValue = updatedCashBalance + portfolioValue;
+
+        await prisma.portfolioState.create({
+            data: {
+                cashBalance: updatedCashBalance,
+                portfolioValue: portfolioValue,
+                totalValue: totalValue,
+            },
+        });
+        console.log(`Portfolio state updated: Cash Balance = $${updatedCashBalance}, Portfolio Value = $${portfolioValue}, Total Value = $${totalValue}`);
+    } catch (error) {
+        console.error('Error calculating portfolio state:', error);
+    }
+}
+
 async function processAction(input){
     const {action,symbol,quantity,reason} = input;
     try {
         //TO:DO - check whether the SYMBOL actually exists
         const marketPrice = await getCurrentPrice(symbol);
-        console.log(`Buying ${quantity} of ${symbol} at $${marketPrice} each. Reason: ${reason}`);
-        if(action==='BUY'){
+        const totalCost = quantity * marketPrice;
+        const latestPortfolioState = await prisma.portfolioState.findFirst({
+            orderBy: { timestamp: 'desc' },
+        });
 
-            //add the transaction to teh database
-            await prisma.transaction.create({
-                data:{
-                    action: 'BUY',
-                    symbol,
-                    quantity,
-                    price: marketPrice,
-                    reason
+        if(action==='BUY'){
+            
+            if (!latestPortfolioState) {
+                throw new Error('Portfolio state not found. Please initialize the portfolio.');
+            }
+            
+            if (latestPortfolioState.cashBalance >= totalCost){
+                console.log(`Buying ${quantity} of ${symbol} at $${marketPrice} each. Reason: ${reason}`);
+            
+                //add the transaction to the database
+                await prisma.transaction.create({
+                    data:{
+                        action: 'BUY',
+                        symbol,
+                        quantity,
+                        price: marketPrice,
+                        reason
                 },
             });
 
@@ -58,9 +104,25 @@ async function processAction(input){
                     },
                 });
             }
+            
+            const updatedCashBalance = latestPortfolioState.cashBalance - totalCost;
+            const portfolioValue = await calculatePortfolioValue();
+            const totalValue = updatedCashBalance + portfolioValue;
+        
+            await prisma.portfolioState.create({
+                data: {
+                    cashBalance: updatedCashBalance,
+                    portfolioValue: portfolioValue,
+                    totalValue: totalValue,
+                },
+            });
+
+        } else{
+            console.error(`Insufficient cash to buy ${quantity} of ${symbol}.`);
+        }
         }
         else if(action=='SELL'){
-        //check if we actually have the stocks avaible
+            //check if we actually have the stocks avaible
         const existingPosition = await prisma.position.findUnique({
             where: { symbol },
         });
@@ -68,7 +130,7 @@ async function processAction(input){
         //check wether the stock is in our position and we have sufficient quantity
         if (existingPosition && existingPosition.quantity >= quantity){
             const remainingQuantity = existingPosition.quantity-quantity;
-
+            const totalProceeds = quantity * marketPrice;
             //add the transaction to database
             await prisma.transaction.create({
                 data: {
@@ -93,14 +155,39 @@ async function processAction(input){
                     },
                 });
             }
+
+            const updatedCashBalance = latestPortfolioState.cashBalance + totalProceeds;
+            const portfolioValue = await calculatePortfolioValue();
+            const totalValue = updatedCashBalance + portfolioValue;
+    
+            await prisma.portfolioState.create({
+                data: {
+                    cashBalance: updatedCashBalance,
+                    portfolioValue: portfolioValue,
+                    totalValue: totalValue,
+                },
+            });
+
             console.log(`Sold ${quantity} of ${symbol} at $${marketPrice} each. Reason: ${reason}`);
         } else{
             console.error(`Cannot sell ${quantity} of ${symbol}. Not enough shares available.`);
         }
-        }
+    }
     } catch (error) {
         console.error('Error processing action:', error);
     }
+}
+
+async function calculatePortfolioValue() {
+    const positions = await prisma.position.findMany();
+    let portfolioValue = 0;
+
+    for (const position of positions) {
+        const marketPrice = await getCurrentPrice(position.symbol);
+        portfolioValue += position.quantity * marketPrice;
+    }
+
+    return portfolioValue;
 }
 
 function calculateNewAvgBuyPrice(existingQuantity, existingAvgPrice, newQuantity, newPrice) {
@@ -109,4 +196,4 @@ function calculateNewAvgBuyPrice(existingQuantity, existingAvgPrice, newQuantity
     return totalCost / totalQuantity;
 }
 
-module.exports = {loadActions};
+module.exports = {loadActions, calculatePortfolioState};
