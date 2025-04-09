@@ -27,6 +27,9 @@ Do NOT include any extra text or explanation outside the JSON.
 Make sure the action is possible with the available cash or holdings.
 When you want to buy a stock, but don't have enough money, sell some stocks first, and then buy it.
 Make atleast 2 actions.
+Assume that we buy stocks every 2 hours.
+Try to short if possible.
+Leave at least 2k dollars as a reserve.
 Avoid suggesting fractional quantities.
 Be diverse when buying stocks, if you bought some stock in previous transactions, buy it only if it is really worth it.
 Do not format the response as a code block.

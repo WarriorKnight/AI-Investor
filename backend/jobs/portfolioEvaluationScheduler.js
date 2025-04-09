@@ -18,8 +18,8 @@ async function runPortfolioEvaluation() {
 
 const portfolioEvaluationJob = new CronJob('0 * * * *', runPortfolioEvaluation);
 
-(async () => {
-    await runPortfolioEvaluation();
-})();
+// (async () => {
+//     await runPortfolioEvaluation();
+// })();
 
 portfolioEvaluationJob.start();
