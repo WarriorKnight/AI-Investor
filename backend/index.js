@@ -1,11 +1,20 @@
 const express = require('express');
 const path = require('path');
-const { getPortfolioAll } = require('./db/client');
+const { getPortfolioAll, initializeDatabase } = require('./db/client');
 const app = express();
 
-require('./jobs/portfolioEvaluationScheduler');
+// require('./jobs/portfolioEvaluationScheduler');
 require('./jobs/buySellScheduler');
 
+(async () => {
+    try {
+        await initializeDatabase(100000);
+        console.log('Database initialized successfully');
+    } catch (error) {
+        console.error('Error initializing database:', error);
+        process.exit(1);
+    }
+})();
 
 app.use(express.static(path.join(__dirname, '../dist')));
 

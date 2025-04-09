@@ -19,7 +19,7 @@ Your task is to analyze the current portfolio, available cash, and market prices
   "reason": "Your reasoning in one sentence"
 },
 ]
-Make risks when possible, no risk no gain.
+Make risks when possible, no risk no gain, you want to max the profit as much as possible.
 Buy many stocks at once, go for max profit.
 If the current positions are empty, buy more stocks.
 Write the reasons in czech language.

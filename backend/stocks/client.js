@@ -25,4 +25,18 @@ async function getCurrentPrice(symbol){
   return results.regularMarketPrice;
 }
 
-module.exports = {getWeeklyStocksData, getNews, getCurrentPrice};
+async function isMarketOpened(symbol){
+  try {
+    const quote = await yahooFinance.quote(symbol);
+    const marketState = quote.marketState;
+    // console.log(JSON.stringify(quote));
+    // console.log(marketState);
+    // console.log(`Market state for ${symbol}: ${marketState}`);
+    return marketState === 'REGULAR';
+  } catch (error) {
+    // console.error(`Error fetching market state for ${symbol}:`, error);
+    return false;
+  }
+}
+
+module.exports = {getWeeklyStocksData, getNews, getCurrentPrice, isMarketOpened};
