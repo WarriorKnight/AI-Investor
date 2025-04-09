@@ -74,6 +74,7 @@ async function getPortfolioAll() {
       prisma.position.findMany(),
       prisma.transaction.findMany({
       orderBy: { timestamp: 'desc' },
+      take: 20,
       }),
     ]);
     return {

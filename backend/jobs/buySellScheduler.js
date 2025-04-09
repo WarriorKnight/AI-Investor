@@ -1,7 +1,7 @@
 const { CronJob } = require('cron');
 const { getPortfolio, getPositions, getLastTransactions } = require('../db/client');
 const { fetchAllStocks } = require('../stocks/yahooFinanceClient');
-const { predict, filterDataForPrediction } = require('../predict');
+const { predict, filterDataForPrediction } = require('../predict/predict');
 const { loadActions } = require('../portfolioActions');
 
 // Executes the main job logic to fetch data, filter it, predict actions, and load them.
@@ -31,9 +31,9 @@ const job = new CronJob('30 */1 * * *', async () => {
     await executeJob();
 });
 
-(async () => {
-    console.log("Running job at startup.");
-    await executeJob();
-})();
+// (async () => {
+//     console.log("Running job at startup.");
+//     await executeJob();
+// })();
 
 job.start();
