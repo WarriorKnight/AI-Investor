@@ -7,7 +7,13 @@ const InfoTab: React.FC = () => {
             <p>
                 <strong>AI Investor</strong> je projekt, který simuluje základní podmínky trhu pro 
                 umělou inteligenci. Ta má přístup ke zprávám o firmách, o které se zajímá, a na základě těchto zpráv 
-                a změn cen akcií provádí nákupy a prodeje. Rozhodování o nákupu / prodeji probíhá 5x denně.
+                a změn cen akcií provádí nákupy a prodeje.
+            </p>
+            <p>
+                Projekt je dostupný na {" "}
+                <a href="https://github.com/WarriorKnight/AI-Investor" target="_blank" rel="noopener noreferrer">
+                GitHubu
+                </a>
             </p>
         </div>
     );
