@@ -1,5 +1,5 @@
 const { CronJob } = require('cron');
-const { getPortfolio, getPositions, getLastTransactions } = require('../db/client');
+const { getPortfolio, getPositions, getLastTransactions, filterDataForPrediction } = require('../db/client');
 const { fetchAllStocks } = require('../stocks/stocks');
 const { predict } = require('../predict');
 const { loadActions } = require('../actions');
@@ -11,24 +11,30 @@ async function executeJob() {
     const positionsData = await getPositions();
     const transactionsData = await getLastTransactions();
 
-    const actions = await predict({
+    
+    
+    const rawData = {
         stocksAvaibleToBuy: stocksData,
         myPortfolio: portfolioData,
         stocksInPosition: positionsData,
-        lastTransactions: transactionsData
-    });
+        lastTransactions: transactionsData,
+    };
+    
+    const filteredData = filterDataForPrediction(rawData);
+    
+    const actions = await predict(filteredData);
 
     loadActions(actions);
 }
 
-const job = new CronJob('30 */2 * * *', async () => {
+const job = new CronJob('30 */1 * * *', async () => {
     console.log("Starting job.");
     await executeJob();
 });
 
-(async () => {
-    console.log("Running job at startup.");
-    await executeJob();
-})();
+// (async () => {
+//     console.log("Running job at startup.");
+//     await executeJob();
+// })();
 
 job.start();

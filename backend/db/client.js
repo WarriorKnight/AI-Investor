@@ -111,7 +111,52 @@ async function getLastTransactions(){
   }
 }
 
+function filterDataForPrediction(data) {
+  const filteredStocks = data.stocksAvaibleToBuy.map(stock => ({
+      symbol: stock.information.symbol,
+      price: stock.information.regularMarketPrice,
+      high52Week: stock.information.fiftyTwoWeekHigh,
+      low52Week: stock.information.fiftyTwoWeekLow,
+      dayHigh: stock.information.regularMarketDayHigh,
+      dayLow: stock.information.regularMarketDayLow,
+      quotes: stock.quotes.map(quote => ({
+        date: quote.date,
+        close: quote.close,
+      })),
+      news: stock.news
+  }));
+
+  const filteredPortfolio = {
+      cashBalance: data.myPortfolio.cashBalance,
+      portfolioValue: data.myPortfolio.portfolioValue,
+      totalValue: data.myPortfolio.totalValue,
+  };
+
+  const filteredPositions = data.stocksInPosition.map(position => ({
+      symbol: position.symbol,
+      quantity: position.quantity,
+      avgBuyPrice: position.avgBuyPrice,
+      currentPrice: position.currentPrice,
+  }));
+
+  const filteredTransactions = data.lastTransactions.map(transaction => ({
+      action: transaction.action,
+      symbol: transaction.symbol,
+      quantity: transaction.quantity,
+      price: transaction.price,
+      timestamp: transaction.timestamp,
+      reason: transaction.reason,
+  }));
+
+  return {
+      stocksAvaibleToBuy: filteredStocks,
+      myPortfolio: filteredPortfolio,
+      stocksInPosition: filteredPositions,
+      lastTransactions: filteredTransactions,
+  };
+}
+
 // getPortfolio();
 // getPositions();
 // getLastTransactions();
-module.exports = {initializeDatabase, getPositions, getLastTransactions, getPortfolio, fetchTransactions, getPortfolioAll};
+module.exports = {initializeDatabase, getPositions, getLastTransactions, getPortfolio, fetchTransactions, getPortfolioAll, filterDataForPrediction};

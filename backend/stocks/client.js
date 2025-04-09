@@ -2,13 +2,13 @@ const yahooFinance = require('yahoo-finance2').default;
 
 async function getWeeklyStocksData(symbol) {
     const today = new Date();
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(today.getDate() - 7);
+    const startInterval = new Date();
+    startInterval.setDate(today.getDate() - 1);
   
     const results = await yahooFinance.chart(symbol, {
-      period1: oneWeekAgo,
+      period1: startInterval,
       period2: today,
-      interval: '1d',
+      interval: '1h',
     });
     // console.log(results);
     return results;
