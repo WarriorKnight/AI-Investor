@@ -26,7 +26,7 @@ async function executeJob() {
 }
 
 // Schedules the job to run at a specified interval using a cron expression.
-const job = new CronJob('30 */1 * * *', async () => {
+const job = new CronJob('30 */2 * * *', async () => {
     console.log("Starting job.");
     await executeJob();
 });
