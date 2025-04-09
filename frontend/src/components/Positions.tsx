@@ -5,6 +5,7 @@ interface Position {
     symbol: string;
     quantity: number;
     avgBuyPrice: number;
+    currentPrice: number; // Include the current price from the database
 }
 
 interface PositionsProps {
@@ -25,16 +26,29 @@ const Positions: React.FC<PositionsProps> = ({ positions }) => {
                         <th>Symbol</th>
                         <th>Množství</th>
                         <th>Průměrná nákupní cena</th>
+                        <th>Aktuální cena</th>
+                        <th>Změna (%)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {positions.map((position, index) => (
-                        <tr key={index}>
-                            <td>{position.symbol}</td>
-                            <td>{position.quantity}</td>
-                            <td>${position.avgBuyPrice.toFixed(2)}</td>
-                        </tr>
-                    ))}
+                    {positions.map((position, index) => {
+                        const changePercent = ((position.currentPrice - position.avgBuyPrice) / position.avgBuyPrice) * 100;
+                        return (
+                            <tr key={index}>
+                                <td>{position.symbol}</td>
+                                <td>{position.quantity}</td>
+                                <td>${position.avgBuyPrice.toFixed(2)}</td>
+                                <td>${position.currentPrice.toFixed(2)}</td>
+                                <td
+                                    style={{
+                                        color: changePercent >= 0 ? 'green' : 'red',
+                                    }}
+                                >
+                                    {changePercent.toFixed(2)}%
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>
