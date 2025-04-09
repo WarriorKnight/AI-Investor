@@ -3,13 +3,12 @@ const path = require('path');
 const { getPortfolioAll, initializeDatabase } = require('./db/client');
 const app = express();
 
-// require('./jobs/portfolioEvaluationScheduler');
+require('./jobs/portfolioEvaluationScheduler');
 require('./jobs/buySellScheduler');
 
 (async () => {
     try {
         await initializeDatabase(100000);
-        console.log('Database initialized successfully');
     } catch (error) {
         console.error('Error initializing database:', error);
         process.exit(1);
