@@ -40,24 +40,52 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function predict(input) {
-    //  input = {
-    //     portfolio: {
-    //       cash: 37500,
-    //       holdings: [
-    //         { symbol: "AAPL", quantity: 15, avgBuyPrice: 170.25 },
-    //         { symbol: "TSLA", quantity: 10, avgBuyPrice: 232.10 }
-    //       ]
-    //     },
-    //     prices: [
-    //       { symbol: "AAPL", currentPrice: 174.50, changePercent: 2.4 },
-    //       { symbol: "TSLA", currentPrice: 229.20, changePercent: -1.6 },
-    //       { symbol: "MSFT", currentPrice: 312.40, changePercent: 0.7 },
-    //       { symbol: "AMZN", currentPrice: 143.80, changePercent: 3.2 }
-    //     ],
-    //     strategy: "You are a moderately conservative investor. Prioritize stable, growing stocks and avoid high-risk trades. Avoid trading more than 20% of available cash or holdings."
-    //   };
+function filterDataForPrediction(data) {
+  const filteredStocks = data.stocksAvaibleToBuy.map(stock => ({
+      symbol: stock.information.symbol,
+      price: stock.information.regularMarketPrice,
+      high52Week: stock.information.fiftyTwoWeekHigh,
+      low52Week: stock.information.fiftyTwoWeekLow,
+      dayHigh: stock.information.regularMarketDayHigh,
+      dayLow: stock.information.regularMarketDayLow,
+      quotes: stock.quotes.map(quote => ({
+        date: quote.date,
+        close: quote.close,
+      })),
+      news: stock.news
+  }));
 
+  const filteredPortfolio = {
+      cashBalance: data.myPortfolio.cashBalance,
+      portfolioValue: data.myPortfolio.portfolioValue,
+      totalValue: data.myPortfolio.totalValue,
+  };
+
+  const filteredPositions = data.stocksInPosition.map(position => ({
+      symbol: position.symbol,
+      quantity: position.quantity,
+      avgBuyPrice: position.avgBuyPrice,
+      currentPrice: position.currentPrice,
+  }));
+
+  const filteredTransactions = data.lastTransactions.map(transaction => ({
+      action: transaction.action,
+      symbol: transaction.symbol,
+      quantity: transaction.quantity,
+      price: transaction.price,
+      timestamp: transaction.timestamp,
+      reason: transaction.reason,
+  }));
+
+  return {
+      stocksAvaibleToBuy: filteredStocks,
+      myPortfolio: filteredPortfolio,
+      stocksInPosition: filteredPositions,
+      lastTransactions: filteredTransactions,
+  };
+}
+
+async function predict(input) {
     const response = await client.responses.create({
         model: 'o3-mini',
         instructions,
@@ -71,4 +99,4 @@ async function predict(input) {
     return response.output_text;
 }
 
-module.exports = {predict};
+module.exports = {predict, filterDataForPrediction};

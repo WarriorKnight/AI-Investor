@@ -1,7 +1,7 @@
 const { CronJob } = require('cron');
-const { getPortfolio, getPositions, getLastTransactions, filterDataForPrediction } = require('../db/client');
+const { getPortfolio, getPositions, getLastTransactions } = require('../db/client');
 const { fetchAllStocks } = require('../stocks/stocks');
-const { predict } = require('../predict');
+const { predict, filterDataForPrediction } = require('../predict');
 const { loadActions } = require('../actions');
 
 async function executeJob() {
@@ -11,8 +11,6 @@ async function executeJob() {
     const positionsData = await getPositions();
     const transactionsData = await getLastTransactions();
 
-    
-    
     const rawData = {
         stocksAvaibleToBuy: stocksData,
         myPortfolio: portfolioData,

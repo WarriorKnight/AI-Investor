@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { getPortfolioAll, initializeDatabase, filterDataForPrediction } = require('./db/client');
+const { getPortfolioAll, initializeDatabase } = require('./db/client');
 const app = express();
 
 require('./jobs/portfolioEvaluationScheduler');

@@ -1,15 +1,9 @@
 const {PrismaClient} = require('./../generated/client/index.js');
 const prisma = new PrismaClient()
 
-async function fetchTransactions() {
-    try {
-      const transactions = await prisma.transaction.findMany();
-      console.log(transactions);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
-}
+const MAX_TRANSACTIONS = 10; //max transactions from history to fetch
 
+// Initializes the database with a default portfolio state if it doesn't exist.
 async function initializeDatabase(cashBalance) {
   try {
     const existingBalance = await prisma.portfolioState.findUnique({
@@ -20,16 +14,36 @@ async function initializeDatabase(cashBalance) {
       await prisma.portfolioState.create({
         data: { id: 1, cashBalance, portfolioValue: 0, totalValue: cashBalance },
       });
-      console.log('Database initialized with cash balance of ', cashBalance, '.');
-    } else {
-      console.log('Database already initialized.');
     }
   } catch (error) {
     console.error('Error initializing database:', error);
   }
 }
 
+// Clears all data from the database tables.
+async function clearDatabase() {
+  try {
+    await prisma.transaction.deleteMany();
+    await prisma.position.deleteMany();
+    await prisma.portfolioState.deleteMany();
 
+    console.log('All models cleared successfully.');
+  } catch (error) {
+    console.error('Error clearing database:', error);
+  }
+}
+
+// Fetches all transactions from the database.
+async function fetchTransactions() {
+    try {
+      const transactions = await prisma.transaction.findMany();
+      console.log(transactions);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+}
+
+// Fetches the latest portfolio state from the database.
 async function getPortfolio() {
   try {
     const portfolio = await prisma.portfolioState.findFirst({
@@ -50,9 +64,9 @@ async function getPortfolio() {
   }
 }
 
+// Fetches all portfolio states, positions, and transactions from the database.
 async function getPortfolioAll() {
   try {
-    // Fetch all portfolio states, positions, and transactions in parallel
     const [portfolioStates, positions, transactions] = await Promise.all([
       prisma.portfolioState.findMany({
       orderBy: { timestamp: 'desc' },
@@ -62,8 +76,6 @@ async function getPortfolioAll() {
       orderBy: { timestamp: 'desc' },
       }),
     ]);
-
-    // Return combined portfolio data
     return {
       portfolio: portfolioStates.length > 0 ? portfolioStates : 'No portfolio states available.',
       positions: positions.length > 0 ? positions : 'No positions available.',
@@ -82,6 +94,7 @@ async function getPortfolioAll() {
   }
 }
 
+// Fetches all positions from the database.
 async function getPositions(){
   try {
     const positions = await prisma.position.findMany();
@@ -94,11 +107,12 @@ async function getPositions(){
   }
 }
 
+// Fetches the most recent transactions from the database, limited by MAX_TRANSACTIONS.
 async function getLastTransactions(){
   try {
     const transactions = await prisma.transaction.findMany({
       orderBy: { timestamp: 'desc' },
-      take: 10,
+      take: MAX_TRANSACTIONS,
     });
 
     if (transactions.length === 0) {
@@ -111,52 +125,4 @@ async function getLastTransactions(){
   }
 }
 
-function filterDataForPrediction(data) {
-  const filteredStocks = data.stocksAvaibleToBuy.map(stock => ({
-      symbol: stock.information.symbol,
-      price: stock.information.regularMarketPrice,
-      high52Week: stock.information.fiftyTwoWeekHigh,
-      low52Week: stock.information.fiftyTwoWeekLow,
-      dayHigh: stock.information.regularMarketDayHigh,
-      dayLow: stock.information.regularMarketDayLow,
-      quotes: stock.quotes.map(quote => ({
-        date: quote.date,
-        close: quote.close,
-      })),
-      news: stock.news
-  }));
-
-  const filteredPortfolio = {
-      cashBalance: data.myPortfolio.cashBalance,
-      portfolioValue: data.myPortfolio.portfolioValue,
-      totalValue: data.myPortfolio.totalValue,
-  };
-
-  const filteredPositions = data.stocksInPosition.map(position => ({
-      symbol: position.symbol,
-      quantity: position.quantity,
-      avgBuyPrice: position.avgBuyPrice,
-      currentPrice: position.currentPrice,
-  }));
-
-  const filteredTransactions = data.lastTransactions.map(transaction => ({
-      action: transaction.action,
-      symbol: transaction.symbol,
-      quantity: transaction.quantity,
-      price: transaction.price,
-      timestamp: transaction.timestamp,
-      reason: transaction.reason,
-  }));
-
-  return {
-      stocksAvaibleToBuy: filteredStocks,
-      myPortfolio: filteredPortfolio,
-      stocksInPosition: filteredPositions,
-      lastTransactions: filteredTransactions,
-  };
-}
-
-// getPortfolio();
-// getPositions();
-// getLastTransactions();
-module.exports = {initializeDatabase, getPositions, getLastTransactions, getPortfolio, fetchTransactions, getPortfolioAll, filterDataForPrediction};
+module.exports = {initializeDatabase, getPositions, getLastTransactions, getPortfolio, fetchTransactions, getPortfolioAll};
