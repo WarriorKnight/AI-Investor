@@ -1,4 +1,6 @@
 const yahooFinance = require('yahoo-finance2').default;
+const fs = require('fs');
+const path = require('path');
 
 // Fetches hourly stock data for the past day for a given symbol.
 async function getWeeklyStocksData(symbol) {
@@ -69,9 +71,9 @@ async function fetchAllStocks(){
           quotes: prices.quotes,
           news: news.map(item => item.title),
         });
-        console.log(`Market is open for: ${conf.stocks[stock]}`);
+        // console.log(`Market is open for: ${conf.stocks[stock]}`);
       } else {
-        console.log(`Market is not open for: ${conf.stocks[stock]}`);
+        // console.log(`Market is not open for: ${conf.stocks[stock]}`);
       }
     }
     return stocksData;

@@ -1,5 +1,5 @@
 const { CronJob } = require('cron');
-const { calculatePortfolioState } = require('./../actions');
+const { calculatePortfolioState } = require('../portfolioActions');
 
 // Executes the main job logic, to evaluate the portfolio
 async function runPortfolioEvaluation() {
