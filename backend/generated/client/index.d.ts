@@ -2146,29 +2146,34 @@ export namespace Prisma {
   export type PositionAvgAggregateOutputType = {
     quantity: number | null
     avgBuyPrice: number | null
+    currentPrice: number | null
   }
 
   export type PositionSumAggregateOutputType = {
     quantity: number | null
     avgBuyPrice: number | null
+    currentPrice: number | null
   }
 
   export type PositionMinAggregateOutputType = {
     symbol: string | null
     quantity: number | null
     avgBuyPrice: number | null
+    currentPrice: number | null
   }
 
   export type PositionMaxAggregateOutputType = {
     symbol: string | null
     quantity: number | null
     avgBuyPrice: number | null
+    currentPrice: number | null
   }
 
   export type PositionCountAggregateOutputType = {
     symbol: number
     quantity: number
     avgBuyPrice: number
+    currentPrice: number
     _all: number
   }
 
@@ -2176,29 +2181,34 @@ export namespace Prisma {
   export type PositionAvgAggregateInputType = {
     quantity?: true
     avgBuyPrice?: true
+    currentPrice?: true
   }
 
   export type PositionSumAggregateInputType = {
     quantity?: true
     avgBuyPrice?: true
+    currentPrice?: true
   }
 
   export type PositionMinAggregateInputType = {
     symbol?: true
     quantity?: true
     avgBuyPrice?: true
+    currentPrice?: true
   }
 
   export type PositionMaxAggregateInputType = {
     symbol?: true
     quantity?: true
     avgBuyPrice?: true
+    currentPrice?: true
   }
 
   export type PositionCountAggregateInputType = {
     symbol?: true
     quantity?: true
     avgBuyPrice?: true
+    currentPrice?: true
     _all?: true
   }
 
@@ -2292,6 +2302,7 @@ export namespace Prisma {
     symbol: string
     quantity: number
     avgBuyPrice: number
+    currentPrice: number
     _count: PositionCountAggregateOutputType | null
     _avg: PositionAvgAggregateOutputType | null
     _sum: PositionSumAggregateOutputType | null
@@ -2317,27 +2328,31 @@ export namespace Prisma {
     symbol?: boolean
     quantity?: boolean
     avgBuyPrice?: boolean
+    currentPrice?: boolean
   }, ExtArgs["result"]["position"]>
 
   export type PositionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     symbol?: boolean
     quantity?: boolean
     avgBuyPrice?: boolean
+    currentPrice?: boolean
   }, ExtArgs["result"]["position"]>
 
   export type PositionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     symbol?: boolean
     quantity?: boolean
     avgBuyPrice?: boolean
+    currentPrice?: boolean
   }, ExtArgs["result"]["position"]>
 
   export type PositionSelectScalar = {
     symbol?: boolean
     quantity?: boolean
     avgBuyPrice?: boolean
+    currentPrice?: boolean
   }
 
-  export type PositionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"symbol" | "quantity" | "avgBuyPrice", ExtArgs["result"]["position"]>
+  export type PositionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"symbol" | "quantity" | "avgBuyPrice" | "currentPrice", ExtArgs["result"]["position"]>
 
   export type $PositionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Position"
@@ -2346,6 +2361,7 @@ export namespace Prisma {
       symbol: string
       quantity: number
       avgBuyPrice: number
+      currentPrice: number
     }, ExtArgs["result"]["position"]>
     composites: {}
   }
@@ -2772,6 +2788,7 @@ export namespace Prisma {
     readonly symbol: FieldRef<"Position", 'String'>
     readonly quantity: FieldRef<"Position", 'Int'>
     readonly avgBuyPrice: FieldRef<"Position", 'Float'>
+    readonly currentPrice: FieldRef<"Position", 'Float'>
   }
     
 
@@ -4209,7 +4226,8 @@ export namespace Prisma {
   export const PositionScalarFieldEnum: {
     symbol: 'symbol',
     quantity: 'quantity',
-    avgBuyPrice: 'avgBuyPrice'
+    avgBuyPrice: 'avgBuyPrice',
+    currentPrice: 'currentPrice'
   };
 
   export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
@@ -4399,12 +4417,14 @@ export namespace Prisma {
     symbol?: StringFilter<"Position"> | string
     quantity?: IntFilter<"Position"> | number
     avgBuyPrice?: FloatFilter<"Position"> | number
+    currentPrice?: FloatFilter<"Position"> | number
   }
 
   export type PositionOrderByWithRelationInput = {
     symbol?: SortOrder
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PositionWhereUniqueInput = Prisma.AtLeast<{
@@ -4414,12 +4434,14 @@ export namespace Prisma {
     NOT?: PositionWhereInput | PositionWhereInput[]
     quantity?: IntFilter<"Position"> | number
     avgBuyPrice?: FloatFilter<"Position"> | number
+    currentPrice?: FloatFilter<"Position"> | number
   }, "symbol">
 
   export type PositionOrderByWithAggregationInput = {
     symbol?: SortOrder
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
     _count?: PositionCountOrderByAggregateInput
     _avg?: PositionAvgOrderByAggregateInput
     _max?: PositionMaxOrderByAggregateInput
@@ -4434,6 +4456,7 @@ export namespace Prisma {
     symbol?: StringWithAggregatesFilter<"Position"> | string
     quantity?: IntWithAggregatesFilter<"Position"> | number
     avgBuyPrice?: FloatWithAggregatesFilter<"Position"> | number
+    currentPrice?: FloatWithAggregatesFilter<"Position"> | number
   }
 
   export type PortfolioStateWhereInput = {
@@ -4561,42 +4584,49 @@ export namespace Prisma {
     symbol: string
     quantity: number
     avgBuyPrice: number
+    currentPrice?: number
   }
 
   export type PositionUncheckedCreateInput = {
     symbol: string
     quantity: number
     avgBuyPrice: number
+    currentPrice?: number
   }
 
   export type PositionUpdateInput = {
     symbol?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     avgBuyPrice?: FloatFieldUpdateOperationsInput | number
+    currentPrice?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PositionUncheckedUpdateInput = {
     symbol?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     avgBuyPrice?: FloatFieldUpdateOperationsInput | number
+    currentPrice?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PositionCreateManyInput = {
     symbol: string
     quantity: number
     avgBuyPrice: number
+    currentPrice?: number
   }
 
   export type PositionUpdateManyMutationInput = {
     symbol?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     avgBuyPrice?: FloatFieldUpdateOperationsInput | number
+    currentPrice?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PositionUncheckedUpdateManyInput = {
     symbol?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     avgBuyPrice?: FloatFieldUpdateOperationsInput | number
+    currentPrice?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PortfolioStateCreateInput = {
@@ -4865,28 +4895,33 @@ export namespace Prisma {
     symbol?: SortOrder
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PositionAvgOrderByAggregateInput = {
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PositionMaxOrderByAggregateInput = {
     symbol?: SortOrder
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PositionMinOrderByAggregateInput = {
     symbol?: SortOrder
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PositionSumOrderByAggregateInput = {
     quantity?: SortOrder
     avgBuyPrice?: SortOrder
+    currentPrice?: SortOrder
   }
 
   export type PortfolioStateCountOrderByAggregateInput = {

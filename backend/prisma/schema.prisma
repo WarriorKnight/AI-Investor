@@ -26,9 +26,10 @@ model Transaction {
 }
 
 model Position {
-  symbol      String @id
-  quantity    Int
-  avgBuyPrice Float
+  symbol       String @id
+  quantity     Int
+  avgBuyPrice  Float
+  currentPrice Float  @default(0.0)
 }
 
 model PortfolioState {

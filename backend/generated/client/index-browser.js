@@ -130,7 +130,8 @@ exports.Prisma.TransactionScalarFieldEnum = {
 exports.Prisma.PositionScalarFieldEnum = {
   symbol: 'symbol',
   quantity: 'quantity',
-  avgBuyPrice: 'avgBuyPrice'
+  avgBuyPrice: 'avgBuyPrice',
+  currentPrice: 'currentPrice'
 };
 
 exports.Prisma.PortfolioStateScalarFieldEnum = {

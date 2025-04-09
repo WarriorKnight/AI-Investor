@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Position" ADD COLUMN     "currentPrice" DOUBLE PRECISION NOT NULL DEFAULT 0.0;
