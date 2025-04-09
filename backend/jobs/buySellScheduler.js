@@ -1,6 +1,6 @@
 const { CronJob } = require('cron');
 const { getPortfolio, getPositions, getLastTransactions } = require('../db/client');
-const { fetchAllStocks } = require('../stocks/stocks');
+const { fetchAllStocks } = require('../stocks/yahooFinanceClient');
 const { predict, filterDataForPrediction } = require('../predict');
 const { loadActions } = require('../actions');
 

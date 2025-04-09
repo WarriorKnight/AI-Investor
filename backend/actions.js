@@ -1,5 +1,5 @@
 const {PrismaClient} = require('./generated/client/index.js')
-const {getCurrentPrice} = require('./stocks/client.js');
+const {getCurrentPrice} = require('./stocks/yahooFinanceClient.js');
 const {dbClient} = require('./db/client');
 const prisma = new PrismaClient();
 
