@@ -16,7 +16,7 @@ async function runPortfolioEvaluation() {
     // }
 }
 
-const portfolioEvaluationJob = new CronJob('0 * * * *', runPortfolioEvaluation);
+const portfolioEvaluationJob = new CronJob('*/15 * * * *', runPortfolioEvaluation);
 
 // (async () => {
 //     await runPortfolioEvaluation();
