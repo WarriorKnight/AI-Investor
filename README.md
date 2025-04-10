@@ -34,6 +34,11 @@ The frontend of this project is minimal and was not the main focus. It was built
    ```
 2. Access the frontend in your browser to interact with the application.
 
+## OpenAI API Cost
+
+Each analysis involves processing approximately 15,000 input tokens and generating around 3,000 output tokens. This results in an estimated cost of $0.01764 per analysis.
+
+
 ## Disclaimer
 
 This project is purely for educational purposes and should not be used for actual financial decision-making.
