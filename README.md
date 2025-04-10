@@ -2,6 +2,10 @@
 
 AI Investor is an experimental project to explore whether artificial intelligence can make effective financial decisions. This project is not intended to be taken seriously for real-world investment purposes. It was created as a learning exercise to gain experience with Node.js.
 
+## Live Demo
+
+You can access the live demo of the project here: [AI Investor Live Demo](https://ai-investor-production.up.railway.app/)
+
 ## Purpose
 
 - **Learning Node.js**: The primary goal of this project is to learn and experiment with Node.js.

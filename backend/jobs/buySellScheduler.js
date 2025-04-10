@@ -29,11 +29,12 @@ async function executeJob() {
 const job = new CronJob('30 */2 * * *', async () => {
     console.log("Starting job.");
     await executeJob();
+    console.log("Finished job");
 });
 
-// (async () => {
-//     console.log("Running job at startup.");
-//     await executeJob();
-// })();
+(async () => {
+    console.log("Running job at startup.");
+    await executeJob();
+})();
 
 job.start();
