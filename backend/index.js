@@ -11,7 +11,6 @@ require('./jobs/buySellScheduler');
         await initializeDatabase(100000);
     } catch (error) {
         console.error('Error initializing database:', error);
-        process.exit(1);
     }
 })();
 
