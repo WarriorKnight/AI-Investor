@@ -1,8 +1,8 @@
 import React from 'react';
 import './../App.css';
 import {
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -27,53 +27,73 @@ const Portfolio: React.FC<PortfolioProps> = ({ portfolio }) => {
         return <p className="portfolio-empty">Žádné stavy portfolia nejsou k dispozici.</p>;
     }
 
-    // Prepare data for the chart
     const chartData = portfolio.map((state) => ({
-        timestamp: new Date(state.timestamp).getTime(), // Convert timestamp to Unix time
+        timestamp: new Date(state.timestamp).getTime(),
         cashBalance: state.cashBalance,
         portfolioValue: state.portfolioValue,
-        totalValue: state.totalValue,
     }));
-    chartData.reverse(); // Ensure chronological order
+    chartData.reverse();
 
     return (
         <div className="portfolio-container">
             <h2>Stavy portfolia</h2>
             <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-            dataKey="timestamp"
-            type="number"
-            domain={['dataMin', 'dataMax']}
-            tickFormatter={(tick) => new Date(tick).toLocaleString('cs-CZ')}
-            />
-            <YAxis />
-            <Tooltip
-            labelFormatter={(label) => `Čas: ${new Date(label).toLocaleString('cs-CZ')}`}
-            formatter={(value, name) => {
-                const namesInCzech = {
-                cashBalance: 'Hotovostní zůstatek',
-                portfolioValue: 'Hodnota portfolia',
-                totalValue: 'Celková hodnota',
-                };
-                return [`${value}`, namesInCzech[name as keyof typeof namesInCzech] || name];
-            }}
-            />
-            <Legend
-            formatter={(value) => {
-                const namesInCzech = {
-                cashBalance: 'Hotovostní zůstatek',
-                portfolioValue: 'Hodnota portfolia',
-                totalValue: 'Celková hodnota',
-                };
-                return namesInCzech[value as keyof typeof namesInCzech] || value;
-            }}
-            />
-            <Line type="monotone" dataKey="cashBalance" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="portfolioValue" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="totalValue" stroke="#ffc658" />
-            </LineChart>
+                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                        dataKey="timestamp"
+                        type="number"
+                        domain={['dataMin', 'dataMax']}
+                        tickFormatter={(tick) => new Date(tick).toLocaleString('cs-CZ')}
+                    />
+                    <YAxis />
+                    <Tooltip
+                        labelFormatter={(label) => `Čas: ${new Date(label).toLocaleString('cs-CZ')}`}
+                        formatter={(value, name, props) => {
+                            const namesInCzech = {
+                                cashBalance: 'Hotovostní zůstatek',
+                                portfolioValue: 'Hodnota portfolia',
+                            };
+                        
+                            const startingValue = 100000; // Define the starting value for percentage calculation
+                        
+                            // Calculate totalValue for the current data point
+                            const totalValue = props.payload.cashBalance + props.payload.portfolioValue;
+                        
+                            if (name === 'portfolioValue') {
+                                const percentage = ((totalValue / startingValue) * 100).toFixed(2); // Calculate percentage
+                                return [`$${Math.round(Number(value))} (${percentage}%)`, namesInCzech[name as keyof typeof namesInCzech]];
+                            }
+                        
+                            return [`$${Math.round(Number(value))}`, namesInCzech[name as keyof typeof namesInCzech] || name];
+                        }}
+                    />
+                    <Legend
+                        verticalAlign="top"
+                        height={36}
+                        formatter={(value) => {
+                            const namesInCzech = {
+                                cashBalance: 'Hotovostní zůstatek',
+                                portfolioValue: 'Hodnota portfolia',
+                            };
+                            return namesInCzech[value as keyof typeof namesInCzech] || value;
+                        }}
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="cashBalance"
+                        stackId="1"
+                        stroke="#8884d8"
+                        fill="#8884d8"
+                    />
+                    <Area
+                        type="monotone"
+                        dataKey="portfolioValue"
+                        stackId="1"
+                        stroke="#82ca9d"
+                        fill="#82ca9d"
+                    />
+                </AreaChart>
             </ResponsiveContainer>
         </div>
     );
